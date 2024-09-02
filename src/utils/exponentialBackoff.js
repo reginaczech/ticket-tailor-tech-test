@@ -1,21 +1,22 @@
-// Process webhooks with exponential backoff
-const exponentialBackoff = async (cb, maxDelay) => {
+/* Exponential backoff function: modular function which checks for the success of the callback function
+and retries using an exponential time delay until max time is reached or successful result. */
+
+const exponentialBackoff = async (cb, maxDelay, logging) => {
   let success = false;
   let timeDelay = 100; //start with 1 s //TODO:
 
   while (!success && timeDelay <= maxDelay) {
-    //callback function here to allow for modularity
+    //Callback function here to allow for modularity
     success = await cb();
 
     if (success) {
-      console.log("Successfully sent webhook");
+      if (logging) console.log("Successfully sent webhook");
       return true;
     } else {
-      //SetTimeout is an async function that schedules tasks to run after a specified delay nbut doesnt block the exectution of the subsequent code
-      //Creating a new promise to delay the retrying of the webhook
-      console.log(`Retrying at endpoint in ${timeDelay} s`);
+      if (logging) console.log(`Retrying at endpoint in ${timeDelay} ms`);
+
       await new Promise((resolve) => setTimeout(resolve, timeDelay));
-      timeDelay = timeDelay * 2;
+      timeDelay = timeDelay * 2; //double time delay with each subsequent retry
     }
   }
 };

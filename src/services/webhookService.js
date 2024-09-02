@@ -1,6 +1,5 @@
-// HTTP Post webhooks to webhook endpoint receiver
-
-const sendWebhook = async (url, data) => {
+// HTTP Post webhook data to webhook endpoint receiver
+const sendWebhook = async (url, data, logging) => {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -14,7 +13,9 @@ const sendWebhook = async (url, data) => {
     }
     return true; // Success
   } catch (error) {
-    console.error(`Error sending webhook: ${error.message}`);
+    if (logging) {
+      console.error(`Error sending webhook: ${error.message}`);
+    }
     return false; // Failure
   }
 };
