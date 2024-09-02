@@ -1,6 +1,6 @@
 const { sendWebhook } = require("../src/services/webhookService");
 
-//Unit tests to test the behavior of the function, not to make a network request to the API
+/* Unit tests to test the behavior of the function, not to make a network request to the API*/
 
 //Mock the fetch module:
 global.fetch = jest.fn();
@@ -16,23 +16,23 @@ describe("sendWebhook unit test", () => {
     jest.resetAllMocks();
   });
 
-  it("returns true on successfully sending webhook to destination", async () => {
+  it("should return true on successfully sending webhook to destination", async () => {
     //Mock the response
     fetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
     });
-    const success = await sendWebhook(successMockURL, successData, false);
-    expect(success).toEqual(true);
+    const result = await sendWebhook(successMockURL, successData, false);
+    expect(result).toEqual(true);
   });
 
-  it("returns false on failing to send webhook to destination", async () => {
+  it("should return false on failing to send webhook to destination", async () => {
     //Mock the response
     fetch.mockResolvedValueOnce({
       ok: false,
       status: 500,
     });
-    const success = await sendWebhook(failMockURL, failData, false);
-    expect(success).toEqual(false);
+    const result = await sendWebhook(failMockURL, failData, false);
+    expect(result).toEqual(false);
   });
 });

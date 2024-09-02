@@ -3,7 +3,7 @@ and retries using an exponential time delay until max time is reached or success
 
 const exponentialBackoff = async (cb, maxDelay, logging) => {
   let success = false;
-  let timeDelay = 100; //start with 1 s //TODO:
+  let timeDelay = 1000; //start with 1 s
 
   while (!success && timeDelay <= maxDelay) {
     //Callback function here to allow for modularity

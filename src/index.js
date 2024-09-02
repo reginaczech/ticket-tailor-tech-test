@@ -3,7 +3,7 @@ const path = require("path");
 
 const filePath = path.resolve(__dirname, "../webhooks.txt");
 const maxAttempts = 5;
-const maxDelay = 6000; //1 minute //TODO:
+const maxDelay = 60000; //1 minute
 const allowedEvents = [
   "Spooky Summit",
   "Serene Sands",
