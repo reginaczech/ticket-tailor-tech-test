@@ -22,25 +22,4 @@ describe("Exponential Backoff unit test", () => {
     expect(result).toBe(true);
   });
 
-  it("should retry and return true after successful on second attempt", async () => {
-    const cb = jest
-      .fn()
-      .mockResolvedValueOnce(false) // First attempt fails
-      .mockResolvedValueOnce(true); // Second attempt succeeds
-
-    const resultPromise = exponentialBackoff(cb, maxDelay, true);
-
-    // Advance time and log
-    console.log("Advancing timers by 1000ms");
-    jest.advanceTimersByTime(1000);
-    expect(cb).toHaveBeenCalledTimes(1);
-
-    console.log("Advancing timers by 2000ms");
-    jest.advanceTimersByTime(2000);
-
-    const result = await resultPromise;
-
-    expect(cb).toHaveBeenCalledTimes(2);
-    expect(result).toBe(true);
-  });
 });

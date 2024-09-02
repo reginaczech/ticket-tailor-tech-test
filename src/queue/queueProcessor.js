@@ -28,9 +28,11 @@ const processWebhook = async (
 
     webhookFailureCount[url] = (webhookFailureCount[url] || 0) + 1; //Update failure count for webhook endpoint url
   }
+  
+  return success;
 };
 
-/* Proccess Queue of Webhooks functionality: reads each line of a file and sequentfully processes each webhook. En */
+/* Process Queue of Webhooks functionality: reads each line of a file and sequentially processes each webhook. En */
 const processQueue = async (
   filePath,
   allowedEvents,
@@ -41,7 +43,7 @@ const processQueue = async (
   //Map of failure count at webhook endpoints
   const webhookFailureCount = {};
 
-  // Design Decision: readline vs readFile - readline offers sequentful, line by line processing and is more memory efficient for larger files
+  // Design Decision: readline vs readFile - readline offers sequential, line by line processing and is more memory efficient for larger files
   const queue = readline.createInterface({
     input: fs.createReadStream(filePath),
     crlfDelay: Infinity,
@@ -76,7 +78,7 @@ const processQueue = async (
       );
 
       if (logging) {
-        console.log("Webhook endpoing failure count:", webhookFailureCount);
+        console.log("Webhook endpoint failure count:", webhookFailureCount);
       }
     }
 
@@ -84,4 +86,4 @@ const processQueue = async (
   }
 };
 
-module.exports = { processQueue };
+module.exports = { processWebhook, processQueue };

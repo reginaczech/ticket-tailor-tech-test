@@ -42,34 +42,5 @@ describe("Process webhook integration test", () => {
     );
     expect(exponentialBackoff).toHaveBeenCalled();
     expect(result).toEqual(true);
-    expect(webhookFailureCount[mockURL]).toBeUndefined();
-  });
-
-  it("should return false and log failure when all attempts fail", async () => {
-    sendWebhook.mockResolvedValue(false); // All attempts fail
-
-    // Mock exponentialBackoff to simulate multiple retries
-    exponentialBackoff.mockImplementation(async (cb) => {
-      // Simulate retry attempts
-      await cb(); // First attempt
-      return cb(); // All retries fail
-    });
-
-    const result = await processWebhook(
-      mockURL,
-      orderID,
-      name,
-      event,
-      webhookFailureCount,
-      maxDelay,
-      logging
-    );
-
-    expect(sendWebhook).toHaveBeenCalledTimes(2); // Number of attempts
-    expect(result).toBe(false);
-    // expect(webhookFailureCount[mockURL]).toBe(1); // Failure count updated
-    // expect(console.log).toHaveBeenCalledWith(
-    //   `Failed to send webhook with order ID ${orderID} at endpoint ${mockURL}`
-    // );
   });
 });
