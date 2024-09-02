@@ -4,8 +4,15 @@
   "description": "",
   "main": "webhookProcessor.js",
   "scripts": {
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "validator": "^13.12.0"
+  }
 }

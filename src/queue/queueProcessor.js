@@ -2,6 +2,7 @@ const fs = require("fs");
 const readline = require("readline");
 const { exponentialBackoff } = require("../utils/exponentialBackoff");
 const { sendWebhook } = require("../services/webhookService");
+const { validateData } = require("../utils/validateData");
 
 /* Process Webhook functionality: sends a webhook to its destination with exponential backoff */
 const processWebhook = async (
@@ -13,7 +14,6 @@ const processWebhook = async (
   maxDelay,
   logging
 ) => {
-
   const success = await exponentialBackoff(
     () => sendWebhook(url, { orderID, name, event }, logging),
     maxDelay,
@@ -21,7 +21,6 @@ const processWebhook = async (
   );
 
   if (!success) {
-
     if (logging)
       console.log(
         `Failed to sent webhook with order ID ${orderID} at endpoint ${url} `
@@ -32,7 +31,13 @@ const processWebhook = async (
 };
 
 /* Proccess Queue of Webhooks functionality: reads each line of a file and sequentfully processes each webhook. En */
-const processQueue = async (filePath, maxAttempts, maxDelay, logging) => {
+const processQueue = async (
+  filePath,
+  allowedEvents,
+  maxAttempts,
+  maxDelay,
+  logging
+) => {
   //Map of failure count at webhook endpoints
   const webhookFailureCount = {};
 
@@ -47,7 +52,10 @@ const processQueue = async (filePath, maxAttempts, maxDelay, logging) => {
       .split(",")
       .map((item) => item.trim());
     //Security consideration: ensure the URL starts with HTTPS
-    if (url.startsWith("https")) {
+    if (
+      url.startsWith("https") &&
+      validateData(url, orderID, name, event, allowedEvents) //validates the input data
+    ) {
       if (webhookFailureCount[url] >= maxAttempts) {
         if (logging) {
           console.log(
@@ -66,11 +74,13 @@ const processQueue = async (filePath, maxAttempts, maxDelay, logging) => {
         maxDelay,
         logging
       );
-      
+
       if (logging) {
         console.log("Webhook endpoing failure count:", webhookFailureCount);
       }
     }
+
+    if (logging) console.log(`Invalid data input at url: ${url}.`);
   }
 };
 
